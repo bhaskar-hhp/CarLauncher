@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Car Launcher</string>
+    <string name="search_hint">Search destination…</string>
+    <string name="eta_label">ARRIVAL</string>
+    <string name="distance_label">DISTANCE</string>
+</resources>
