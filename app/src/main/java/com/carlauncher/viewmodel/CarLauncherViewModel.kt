@@ -109,6 +109,8 @@ class CarLauncherViewModel(application: Application) : AndroidViewModel(applicat
             fusedLocationClient?.requestLocationUpdates(request, locationCallback!!, null)
         } catch (e: SecurityException) {
             Log.w("CarLauncher", "Location permission not granted")
+        } catch (e: Exception) {
+            Log.e("CarLauncher", "Location service unavailable", e)
         }
     }
 
@@ -119,16 +121,20 @@ class CarLauncherViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     fun startMediaTracking(context: Context) {
-        mediaSessionManager = context.getSystemService(Context.MEDIA_SESSION_SERVICE) as? MediaSessionManager
-        mediaSessionManager?.addOnActiveSessionsChangedListener(
-            sessionListener, ComponentName(context, javaClass)
-        )
-        mediaSessionManager?.getActiveSessions(
-            ComponentName(context, javaClass)
-        )?.let { sessions ->
-            controllers.addAll(sessions)
-            controllers.forEach { it.registerCallback(controllerCallback) }
-            updateFromBestController()
+        try {
+            mediaSessionManager = context.getSystemService(Context.MEDIA_SESSION_SERVICE) as? MediaSessionManager
+            mediaSessionManager?.addOnActiveSessionsChangedListener(
+                sessionListener, ComponentName(context, javaClass)
+            )
+            mediaSessionManager?.getActiveSessions(
+                ComponentName(context, javaClass)
+            )?.let { sessions ->
+                controllers.addAll(sessions)
+                controllers.forEach { it.registerCallback(controllerCallback) }
+                updateFromBestController()
+            }
+        } catch (e: Exception) {
+            Log.e("CarLauncher", "Media session unavailable", e)
         }
     }
 
