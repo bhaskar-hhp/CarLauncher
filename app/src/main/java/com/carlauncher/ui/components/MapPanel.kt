@@ -2,11 +2,13 @@ package com.carlauncher.ui.components
 
 import android.annotation.SuppressLint
 import android.view.ViewGroup
+import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -28,6 +30,8 @@ fun MapPanel(
 ) {
     var webView by remember { mutableStateOf<WebView?>(null) }
     var webViewReady by remember { mutableStateOf(false) }
+    var isNightMode by remember { mutableStateOf(true) }
+    var trafficOn by remember { mutableStateOf(false) }
 
     LaunchedEffect(locationState.lat, locationState.lng, webViewReady) {
         if (webViewReady && locationState.hasFix) {
@@ -99,7 +103,7 @@ fun MapPanel(
                 }
                 Column {
                     Text(text = "DISTANCE", color = TextTertiary, fontSize = 10.sp, letterSpacing = 1.sp)
-                    val distText = if (locationState.hasFix) "3.2 mi" else "—"
+                    val distText = if (locationState.hasFix) "3.2 mi" else "\u2014"
                     Text(text = distText, color = TextPrimary, fontSize = 16.sp)
                 }
             }
@@ -136,6 +140,60 @@ fun MapPanel(
             ) {
                 Text(text = "\uD83C\uDFA4", fontSize = 13.sp)
             }
+        }
+
+        Row(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = 52.dp, end = 10.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            MapToggleButton(
+                icon = if (isNightMode) "\u2600\uFE0F" else "\uD83C\uDF19",
+                label = if (isNightMode) "Day" else "Night",
+                active = isNightMode,
+                onClick = {
+                    isNightMode = !isNightMode
+                    webView?.evaluateJavascript("setNightMode($isNightMode)", null)
+                },
+            )
+            MapToggleButton(
+                icon = "\uD83D\uDEA7",
+                label = "Traffic",
+                active = trafficOn,
+                onClick = {
+                    trafficOn = !trafficOn
+                    webView?.evaluateJavascript("toggleTraffic()", null)
+                },
+            )
+        }
+    }
+}
+
+@Composable
+private fun MapToggleButton(
+    icon: String,
+    label: String,
+    active: Boolean,
+    onClick: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(if (active) BlueAccent.copy(alpha = 0.25f) else Color(0x88000000))
+            .clickable { onClick() }
+            .padding(horizontal = 8.dp, vertical = 6.dp),
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Text(text = icon, fontSize = 11.sp)
+            Text(
+                text = label,
+                color = if (active) BlueAccent else TextMuted,
+                fontSize = 10.sp,
+            )
         }
     }
 }

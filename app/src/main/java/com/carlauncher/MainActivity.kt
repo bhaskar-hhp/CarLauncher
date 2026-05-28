@@ -148,13 +148,11 @@ private fun CarLauncherScreen(
                         .fillMaxWidth(),
                 )
 
-                QuickTiles(
-                    tiles = listOf(
-                        QuickTile(icon = "\uD83D\uDD0A", label = "Media", active = true),
-                        QuickTile(icon = "\uD83D\uDCDE", label = "Recent"),
-                        QuickTile(icon = "\uD83C\uDF21\uFE0F", label = "Temp", extra = "72\u00B0"),
-                        QuickTile(icon = "\u26A1", label = "Battery", extra = "82%"),
-                    ),
+                AppShortcuts(
+                    slots = List(4) { ShortcutSlot() },
+                    onSlotClick = { index ->
+                        /* TODO: app picker */
+                    },
                 )
 
                 AppDock(onAppClick = onLaunchApp)
