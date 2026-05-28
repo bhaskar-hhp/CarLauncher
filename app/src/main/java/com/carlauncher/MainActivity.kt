@@ -136,16 +136,13 @@ private fun CarLauncherScreen(
                 modifier = Modifier
                     .weight(0.35f)
                     .fillMaxHeight(),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                MediaPanel(
+                MediaBar(
                     mediaState = mediaState,
                     onPlayPause = onPlayPause,
-                    onSkipNext = onSkipNext,
-                    onSkipPrevious = onSkipPrevious,
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth(),
+                    onNext = onSkipNext,
+                    onPrev = onSkipPrevious,
                 )
 
                 AppShortcuts(
@@ -154,6 +151,8 @@ private fun CarLauncherScreen(
                         /* TODO: app picker */
                     },
                 )
+
+                Spacer(Modifier.weight(1f))
 
                 AppDock(onAppClick = onLaunchApp)
             }

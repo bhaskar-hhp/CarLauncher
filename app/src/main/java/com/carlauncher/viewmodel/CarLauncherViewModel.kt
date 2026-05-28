@@ -153,9 +153,10 @@ class CarLauncherViewModel(application: Application) : AndroidViewModel(applicat
             _mediaState.value = _mediaState.value.copy(
                 isPlaying = ctrl.playbackState?.state == PlaybackState.STATE_PLAYING,
                 hasSession = true,
+                packageName = ctrl.packageName,
             )
         } else {
-            _mediaState.value = MediaState(hasSession = false)
+            _mediaState.value = MediaState(hasSession = false, packageName = null)
         }
     }
 

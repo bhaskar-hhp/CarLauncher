@@ -7,6 +7,7 @@ val DarkSurface = Color(0xFF161B22)
 val DarkSurfaceVariant = Color(0xFF1A1F3A)
 val DarkCard = Color(0xFF192231)
 val DarkBorder = Color(0x0DFFFFFF)
+val SurfaceDim = Color(0xFF111827)
 
 val BlueAccent = Color(0xFF3B82F6)
 val BlueAccentDim = Color(0xFF2563EB)
