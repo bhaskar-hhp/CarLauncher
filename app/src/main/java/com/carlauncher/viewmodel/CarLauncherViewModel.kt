@@ -15,6 +15,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -73,16 +74,14 @@ class CarLauncherViewModel(application: Application) : AndroidViewModel(applicat
             )
         }
         override fun onSessionDestroyed() {
-            controllers.removeAll { !it.getTransportControls().isNotNull }
+            controllers.removeAll { it.transportControls != null }
             updateFromBestController()
         }
-        private fun MediaController.getTransportControls() = transportControls
-        private fun Any?.isNotNull() = this != null
     }
 
     fun startLocationUpdates(context: Context) {
         try {
-            fusedLocationClient = FusedLocationProviderClient(context)
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
             val request = LocationRequest.Builder(
                 Priority.PRIORITY_HIGH_ACCURACY, 5000L
             ).apply {
