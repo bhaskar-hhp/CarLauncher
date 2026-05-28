@@ -44,17 +44,22 @@ fun MediaPanel(
                         .background(Color(0xFF212121)),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Text(text = "\uD83C\uDFB5", fontSize = 17.sp)
+                    Text(text = if (mediaState.hasSession) "\uD83C\uDFB5" else "\uD83C\uDFB6", fontSize = 17.sp)
                 }
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = mediaState.title,
-                        color = TextPrimary,
-                        fontSize = 13.sp,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                    Text(text = mediaState.artist, color = TextTertiary, fontSize = 10.sp)
+                    if (mediaState.hasSession) {
+                        Text(
+                            text = mediaState.title.ifEmpty { "Playing..." },
+                            color = TextPrimary,
+                            fontSize = 13.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                        Text(text = mediaState.artist.ifEmpty { "Unknown" }, color = TextTertiary, fontSize = 10.sp)
+                    } else {
+                        Text(text = "No media playing", color = TextMuted, fontSize = 12.sp)
+                        Text(text = "Open YouTube Music", color = TextTertiary, fontSize = 10.sp)
+                    }
                 }
                 Text(
                     text = "YT Music",
@@ -99,17 +104,17 @@ fun MediaPanel(
             ) {
                 Text(
                     text = "\u23EE",
-                    color = TextSecondary,
+                    color = if (mediaState.hasSession) TextSecondary else TextMuted,
                     fontSize = 16.sp,
-                    modifier = Modifier.clickable { onSkipPrevious() },
+                    modifier = Modifier.clickable(enabled = mediaState.hasSession) { onSkipPrevious() },
                 )
                 Spacer(modifier = Modifier.width(20.dp))
                 Box(
                     modifier = Modifier
                         .size(30.dp)
                         .clip(CircleShape)
-                        .background(Color(0xFFFF0000))
-                        .clickable { onPlayPause() },
+                        .background(if (mediaState.hasSession) Color(0xFFFF0000) else Color(0xFF660000))
+                        .clickable(enabled = mediaState.hasSession) { onPlayPause() },
                     contentAlignment = Alignment.Center,
                 ) {
                     val playIcon = if (mediaState.isPlaying) "\u23F8" else "\u25B6"
@@ -118,9 +123,9 @@ fun MediaPanel(
                 Spacer(modifier = Modifier.width(20.dp))
                 Text(
                     text = "\u23ED",
-                    color = TextSecondary,
+                    color = if (mediaState.hasSession) TextSecondary else TextMuted,
                     fontSize = 16.sp,
-                    modifier = Modifier.clickable { onSkipNext() },
+                    modifier = Modifier.clickable(enabled = mediaState.hasSession) { onSkipNext() },
                 )
             }
         }

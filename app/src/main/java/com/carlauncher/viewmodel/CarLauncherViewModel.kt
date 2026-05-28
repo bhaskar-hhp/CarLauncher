@@ -30,11 +30,12 @@ data class LocationState(
 )
 
 data class MediaState(
-    val title: String = "Blinding Lights",
-    val artist: String = "The Weeknd",
+    val title: String = "",
+    val artist: String = "",
     val albumArt: Bitmap? = null,
     val isPlaying: Boolean = false,
     val packageName: String? = null,
+    val hasSession: Boolean = false,
 )
 
 class CarLauncherViewModel(application: Application) : AndroidViewModel(application) {
@@ -74,7 +75,7 @@ class CarLauncherViewModel(application: Application) : AndroidViewModel(applicat
             )
         }
         override fun onSessionDestroyed() {
-            controllers.removeAll { it.transportControls != null }
+            controllers.removeAll { it.transportControls == null }
             updateFromBestController()
         }
     }
@@ -122,13 +123,10 @@ class CarLauncherViewModel(application: Application) : AndroidViewModel(applicat
 
     fun startMediaTracking(context: Context) {
         try {
+            val cn = ComponentName(context, com.carlauncher.service.MediaNotificationListener::class.java)
             mediaSessionManager = context.getSystemService(Context.MEDIA_SESSION_SERVICE) as? MediaSessionManager
-            mediaSessionManager?.addOnActiveSessionsChangedListener(
-                sessionListener, ComponentName(context, javaClass)
-            )
-            mediaSessionManager?.getActiveSessions(
-                ComponentName(context, javaClass)
-            )?.let { sessions ->
+            mediaSessionManager?.addOnActiveSessionsChangedListener(sessionListener, cn)
+            mediaSessionManager?.getActiveSessions(cn)?.let { sessions ->
                 controllers.addAll(sessions)
                 controllers.forEach { it.registerCallback(controllerCallback) }
                 updateFromBestController()
@@ -154,7 +152,10 @@ class CarLauncherViewModel(application: Application) : AndroidViewModel(applicat
             updateMediaState(ctrl.metadata)
             _mediaState.value = _mediaState.value.copy(
                 isPlaying = ctrl.playbackState?.state == PlaybackState.STATE_PLAYING,
+                hasSession = true,
             )
+        } else {
+            _mediaState.value = MediaState(hasSession = false)
         }
     }
 

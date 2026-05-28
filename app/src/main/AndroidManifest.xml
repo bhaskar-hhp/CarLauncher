@@ -30,6 +30,13 @@
             </intent-filter>
         </activity>
 
+        <service
+            android:name=".service.MediaNotificationListener"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

@@ -10,10 +10,16 @@
   #map { width: 100%; height: 100%; }
   .leaflet-control-zoom { display: none; }
   .leaflet-control-attribution { display: none; }
+  .traffic-bar {
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, #4caf50, #ffaa00, #ff4444);
+    transition: opacity 0.3s; z-index: 1000;
+  }
 </style>
 </head>
 <body>
 <div id="map"></div>
+<div id="trafficBar" class="traffic-bar" style="opacity:0"></div>
 <script>
   const map = L.map('map', {
     center: [37.7749, -122.4194],
@@ -36,12 +42,6 @@
   const dayTile = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     maxZoom: 19,
     attribution: '&copy; CARTO',
-  });
-
-  const trafficLayer = L.tileLayer('https://tiles.opentraffic.io/{z}/{x}/{y}.png', {
-    maxZoom: 18,
-    opacity: 0.6,
-    attribution: '&copy; OpenTraffic',
   });
 
   const userIcon = L.divIcon({
@@ -94,10 +94,11 @@
 
   function toggleTraffic() {
     trafficVisible = !trafficVisible;
+    const bar = document.getElementById('trafficBar');
     if (trafficVisible) {
-      trafficLayer.addTo(map);
+      bar.style.opacity = '1';
     } else {
-      map.removeLayer(trafficLayer);
+      bar.style.opacity = '0';
     }
     return trafficVisible;
   }
