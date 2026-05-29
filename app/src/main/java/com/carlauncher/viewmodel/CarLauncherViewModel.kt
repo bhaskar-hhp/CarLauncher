@@ -52,6 +52,7 @@ class CarLauncherViewModel(application: Application) : AndroidViewModel(applicat
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private var locationCallback: LocationCallback? = null
     private var mediaSessionManager: MediaSessionManager? = null
+    private var mediaSessionComponentName: ComponentName? = null
     private var activeController: MediaController? = null
     private val controllers = mutableListOf<MediaController>()
 
@@ -75,8 +76,15 @@ class CarLauncherViewModel(application: Application) : AndroidViewModel(applicat
             )
         }
         override fun onSessionDestroyed() {
-            controllers.removeAll { it.transportControls == null }
-            updateFromBestController()
+            mediaSessionComponentName?.let { cn ->
+                mediaSessionManager?.getActiveSessions(cn)?.let { sessions ->
+                    controllers.forEach { it.unregisterCallback(controllerCallback) }
+                    controllers.clear()
+                    controllers.addAll(sessions)
+                    controllers.forEach { it.registerCallback(controllerCallback) }
+                    updateFromBestController()
+                }
+            }
         }
     }
 
@@ -124,6 +132,7 @@ class CarLauncherViewModel(application: Application) : AndroidViewModel(applicat
     fun startMediaTracking(context: Context) {
         try {
             val cn = ComponentName(context, com.carlauncher.service.MediaNotificationListener::class.java)
+            mediaSessionComponentName = cn
             mediaSessionManager = context.getSystemService(Context.MEDIA_SESSION_SERVICE) as? MediaSessionManager
             mediaSessionManager?.addOnActiveSessionsChangedListener(sessionListener, cn)
             mediaSessionManager?.getActiveSessions(cn)?.let { sessions ->
@@ -142,6 +151,7 @@ class CarLauncherViewModel(application: Application) : AndroidViewModel(applicat
         controllers.clear()
         activeController = null
         mediaSessionManager = null
+        mediaSessionComponentName = null
     }
 
     private fun updateFromBestController() {
