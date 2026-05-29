@@ -4,11 +4,13 @@ import android.app.Application
 import android.content.ComponentName
 import android.content.Context
 import android.graphics.Bitmap
+import android.media.AudioManager
 import android.media.MediaMetadata
 import android.media.session.MediaController
 import android.media.session.MediaSessionManager
 import android.media.session.PlaybackState
 import android.util.Log
+import android.view.KeyEvent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -184,18 +186,37 @@ class CarLauncherViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     fun playPause() {
-        activeController?.transportControls?.let { tc ->
+        if (activeController != null) {
+            val tc = activeController!!.transportControls
             val state = _mediaState.value.isPlaying
             if (state) tc.pause() else tc.play()
+        } else {
+            dispatchMediaKey(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE)
         }
     }
 
     fun skipNext() {
-        activeController?.transportControls?.skipToNext()
+        if (activeController != null) {
+            activeController!!.transportControls.skipToNext()
+        } else {
+            dispatchMediaKey(KeyEvent.KEYCODE_MEDIA_NEXT)
+        }
     }
 
     fun skipPrevious() {
-        activeController?.transportControls?.skipToPrevious()
+        if (activeController != null) {
+            activeController!!.transportControls.skipToPrevious()
+        } else {
+            dispatchMediaKey(KeyEvent.KEYCODE_MEDIA_PREVIOUS)
+        }
+    }
+
+    private fun dispatchMediaKey(keyCode: Int) {
+        try {
+            val am = getApplication<Application>().getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            am.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, keyCode))
+            am.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, keyCode))
+        } catch (_: Exception) { }
     }
 
     override fun onCleared() {
