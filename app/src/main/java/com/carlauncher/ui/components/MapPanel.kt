@@ -111,41 +111,8 @@ fun MapPanel(
 
         Row(
             modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(top = 10.dp, start = 10.dp, end = 10.dp)
-                .fillMaxWidth()
-                .height(36.dp),
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-        ) {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .background(Color(0x99000000), RoundedCornerShape(8.dp))
-                    .padding(horizontal = 12.dp),
-                contentAlignment = Alignment.CenterStart,
-            ) {
-                Text(
-                    text = "\uD83D\uDD0D  Search destination\u2026",
-                    color = TextMuted,
-                    fontSize = 12.sp,
-                )
-            }
-            Box(
-                modifier = Modifier
-                    .width(36.dp)
-                    .fillMaxHeight()
-                    .background(Color(0x88000000), RoundedCornerShape(8.dp)),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(text = "\uD83C\uDFA4", fontSize = 13.sp)
-            }
-        }
-
-        Row(
-            modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(top = 52.dp, end = 10.dp),
+                .padding(top = 10.dp, end = 10.dp),
             horizontalArrangement = Arrangement.spacedBy(6.dp),
         ) {
             MapToggleButton(
