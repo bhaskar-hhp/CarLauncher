@@ -2,10 +2,8 @@ package com.carlauncher.ui.components
 
 import android.annotation.SuppressLint
 import android.view.ViewGroup
-import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -74,40 +72,6 @@ fun MapPanel(
                 }
             },
         )
-
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(12.dp)
-                .padding(end = 24.dp, bottom = 4.dp),
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .background(Color(0xAA000000), RoundedCornerShape(12.dp))
-                    .padding(horizontal = 14.dp, vertical = 8.dp),
-            ) {
-                Column {
-                    Text(text = "ARRIVAL", color = TextTertiary, fontSize = 10.sp, letterSpacing = 1.sp)
-                    Text(text = "12 min", color = BlueAccent, fontSize = 20.sp, letterSpacing = 0.sp)
-                }
-                Box(
-                    modifier = Modifier
-                        .width(1.dp)
-                        .height(28.dp),
-                ) {
-                    Canvas(modifier = Modifier.fillMaxSize()) {
-                        drawRect(color = DarkBorder)
-                    }
-                }
-                Column {
-                    Text(text = "DISTANCE", color = TextTertiary, fontSize = 10.sp, letterSpacing = 1.sp)
-                    val distText = if (locationState.hasFix) "3.2 mi" else "\u2014"
-                    Text(text = distText, color = TextPrimary, fontSize = 16.sp)
-                }
-            }
-        }
 
         Row(
             modifier = Modifier

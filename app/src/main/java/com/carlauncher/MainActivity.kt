@@ -18,7 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.carlauncher.ui.components.*
+import com.carlauncher.ui.components.StatusBar
+import com.carlauncher.ui.components.MediaBar
+import com.carlauncher.ui.components.AppDock
+import com.carlauncher.ui.components.MapPanel
 import com.carlauncher.ui.theme.*
 import com.carlauncher.viewmodel.CarLauncherViewModel
 
@@ -143,13 +146,6 @@ private fun CarLauncherScreen(
                     onPlayPause = onPlayPause,
                     onNext = onSkipNext,
                     onPrev = onSkipPrevious,
-                )
-
-                AppShortcuts(
-                    slots = List(4) { ShortcutSlot() },
-                    onSlotClick = { index ->
-                        /* TODO: app picker */
-                    },
                 )
 
                 Spacer(Modifier.weight(1f))
