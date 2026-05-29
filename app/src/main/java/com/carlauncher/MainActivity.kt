@@ -21,6 +21,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.carlauncher.ui.components.StatusBar
 import com.carlauncher.ui.components.MediaBar
 import com.carlauncher.ui.components.AppDock
+import com.carlauncher.ui.components.DockApp
 import com.carlauncher.ui.components.MapPanel
 import com.carlauncher.ui.theme.*
 import com.carlauncher.viewmodel.CarLauncherViewModel
