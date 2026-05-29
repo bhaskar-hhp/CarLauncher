@@ -66,23 +66,27 @@ class CarLauncherViewModel(application: Application) : AndroidViewModel(applicat
         }
     }
 
-    private val controllerCallback = object : MediaController.Callback() {
-        override fun onMetadataChanged(metadata: MediaMetadata?) {
-            updateMediaState(metadata)
-        }
-        override fun onPlaybackStateChanged(state: PlaybackState?) {
-            _mediaState.value = _mediaState.value.copy(
-                isPlaying = state?.state == PlaybackState.STATE_PLAYING,
-            )
-        }
-        override fun onSessionDestroyed() {
-            mediaSessionComponentName?.let { cn ->
-                mediaSessionManager?.getActiveSessions(cn)?.let { sessions ->
-                    controllers.forEach { it.unregisterCallback(controllerCallback) }
-                    controllers.clear()
-                    controllers.addAll(sessions)
-                    controllers.forEach { it.registerCallback(controllerCallback) }
-                    updateFromBestController()
+    private lateinit var controllerCallback: MediaController.Callback
+
+    init {
+        controllerCallback = object : MediaController.Callback() {
+            override fun onMetadataChanged(metadata: MediaMetadata?) {
+                updateMediaState(metadata)
+            }
+            override fun onPlaybackStateChanged(state: PlaybackState?) {
+                _mediaState.value = _mediaState.value.copy(
+                    isPlaying = state?.state == PlaybackState.STATE_PLAYING,
+                )
+            }
+            override fun onSessionDestroyed() {
+                mediaSessionComponentName?.let { cn ->
+                    mediaSessionManager?.getActiveSessions(cn)?.let { sessions ->
+                        controllers.forEach { it.unregisterCallback(controllerCallback) }
+                        controllers.clear()
+                        controllers.addAll(sessions)
+                        controllers.forEach { it.registerCallback(controllerCallback) }
+                        updateFromBestController()
+                    }
                 }
             }
         }
